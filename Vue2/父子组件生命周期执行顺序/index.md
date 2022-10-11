@@ -7,7 +7,7 @@
 ```
 
 ```
-// 子组件是一步组件 父子组件的首次挂载生命周期执行顺序是
+// 子组件是异步组件 父子组件的首次挂载生命周期执行顺序是
 父beforeCreate => 父created => 父beforeMount => 父mounted => 	
 子beforeCreate => 子created => 子beforeMount => 子mounted 
 ```
