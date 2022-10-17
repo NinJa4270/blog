@@ -3,7 +3,7 @@ Promise._all = function (promiseArray) {
     let count = 0
     return new Promise((resolve, reject) => {
         for (let i = 0; i < promiseArray.length; i++) {
-            const p = promiseArray[i]
+            const p = Promise.resolve(promiseArray[i])
             p.then(res => {
                 result.push(res)
                 count++
