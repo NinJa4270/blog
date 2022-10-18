@@ -16,7 +16,6 @@ export default class _Promise {
             this.reject(e)
         }
     }
-
     resolve(value) {
         if (this.state === _Promise.PENDING) {
             this.state = _Promise.FULFILLED
@@ -35,7 +34,6 @@ export default class _Promise {
             this.onRejectedCbs.forEach(fn => fn());
         }
     }
-
     then(onFulfilled, onRejected) {
         // 为 onFulfilled onRejected 设置默认值
         onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
@@ -84,7 +82,6 @@ export default class _Promise {
         })
         return promise2
     }
-
     catch(errorCb) {
         return this.then(null, errorCb)
     }
