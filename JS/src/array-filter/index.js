@@ -8,3 +8,15 @@ Array.prototype._filter = function (cb, thisArg = this) {
     }
     return result
 }
+
+// reduce实现filter
+Array.prototype._filter = function (cb, thisArg = this) {
+    const result = []
+    this.reduce((pre, curr, index, array) => {
+        const ret = cb.call(thisArg, curr, index, array)
+        if (ret) {
+            result.push(curr)
+        }
+    }, null)
+    return result
+}

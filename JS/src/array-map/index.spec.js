@@ -25,8 +25,6 @@ test("map", async () => {
         }
     }, obj)
 
-
     expect(result2).toEqual(result);
-
 });
 

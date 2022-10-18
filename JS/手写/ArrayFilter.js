@@ -7,3 +7,14 @@ Array.prototype._filter = function (cb, thisArg) {
     }
     return res
 }
+
+Array.prototype._filter = function (cb, thisArg = this) {
+    const result = []
+    this.reduce((pre, curr, index, array) => {
+        const ret = cb.call(thisArg, curr, index, array)
+        if (ret) {
+            result.push(curr)
+        }
+    }, null)
+    return result
+}

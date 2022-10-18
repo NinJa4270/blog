@@ -5,3 +5,11 @@ Array.prototype._map = function (cb, thisArg) {
     }
     return res
 }
+
+Array.prototype._map = function (cb, thisArg = this) {
+    const result = []
+    this.reduce((pre, curr, index, array) => {
+        result.push(cb.call(thisArg, curr, index, array))
+    }, null)
+    return result
+}

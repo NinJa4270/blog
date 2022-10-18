@@ -13,7 +13,7 @@ test("filter", async () => {
     const result2 = arr._filter(function (value, index, array) {
         if (value <= this.flag) return true
     }, obj)
-    expect(result2).toEqual(result);
 
+    expect(result2).toEqual(result);
 });
 
