@@ -1,6 +1,8 @@
 ## vuecli 项目 使用webpack5优化实践
 
-## 跑通
+**改造项目：https://github.com/iczer/vue-antd-admin**
+
+## 基本配置 先跑通项目
 
 ##### 1. 首先是对 env的配置 `vue-cli` 通过.env 文件配置环境变量。
 
@@ -708,6 +710,210 @@ module.exports = (env) => {
 
 ```
 
+```js
+const path = require('path')
+function resolve(file) {
+    return path.resolve(__dirname, file);
+}
+const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default
+const VueLoaderPlugin = require('vue-loader/lib/plugin-webpack5');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { getThemeColors, modifyVars } = require('./src/utils/themeUtil')
+const { resolveCss } = require('./src/utils/theme-color-replacer-extend')
+const ThemeColorReplacer = require('webpack-theme-color-replacer')
+const webpack = require('webpack')
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
+
+const HappyPack = require("happypack");
+
+const assetsCDN = {
+    externals: {
+        vue: 'Vue',
+        'vue-router': 'VueRouter',
+        vuex: 'Vuex',
+        axios: 'axios',
+        nprogress: 'NProgress',
+        clipboard: 'ClipboardJS',
+        '@antv/data-set': 'DataSet',
+        'js-cookie': 'Cookies',
+        'ant-design-vue': 'antd',
+        moment: "moment",
+    },
+    css: [
+        'https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css'
+    ],
+    js: [
+        '//cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js',
+        '//cdn.jsdelivr.net/npm/moment@2.29.1/locale/zh-cn.js',
+        '//cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
+        '//cdn.jsdelivr.net/npm/vue-router@3.3.4/dist/vue-router.min.js',
+        '//cdn.jsdelivr.net/npm/vuex@3.4.0/dist/vuex.min.js',
+        '//cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
+        '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js',
+        '//cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js',
+        '//cdn.jsdelivr.net/npm/@antv/data-set@0.11.4/build/data-set.min.js',
+        '//cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js',
+        '//cdn.jsdelivr.net/npm/ant-design-vue@1.7.2/dist/antd.min.js',
+    ]
+}
+// 当前主机线程-2
+const parallel = require('os').cpus().length - 2
+module.exports = (env) => {
+    const isProd = env.production
+    return {
+        mode: isProd ? 'production' : 'development',
+        profile: true,
+        entry: ["whatwg-fetch", resolve("src/main")],
+        output: {
+            filename: "[name].js",
+            path: resolve('dist')
+        },
+        performance: {
+            maxAssetSize: 500 * 1024,
+            maxEntrypointSize: 500 * 1024,
+            hints: "warning",
+            assetFilter: function (assetFilename) {
+                return assetFilename.endsWith(".js");
+            },
+        },
+        optimization: {
+            minimize: isProd ? true : false, // 默认production 会开始压缩
+            minimizer: [
+                '...',
+                new TerserPlugin({
+                    parallel: parallel,
+                    extractComments: false,
+                }),
+                new CssMinimizerPlugin(),
+                new HtmlMinimizerPlugin({
+                    minimizerOptions: {
+                        collapseBooleanAttributes: true,
+                        useShortDoctype: true,
+                    },
+                }),
+            ],
+            usedExports: true, // 开启 Tree Shaking 
+            splitChunks: {
+                chunks: 'all',
+                maxSize: 500000,
+                minSize: 20000,
+                minChunks: 1,
+                cacheGroups: {
+                    defaultVendors: {
+                        test: /[\\/]node_modules[\\/]/,
+                        priority: -10,
+                        reuseExistingChunk: true,
+                    },
+                    default: {
+                        minChunks: 2,
+                        priority: -20,
+                        reuseExistingChunk: true,
+                    }
+                }
+            }
+        },
+        resolve: {
+            alias: {
+                '@': resolve('src/'),
+            },
+            extensions: ['.js', '.vue'],
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.vue$/i,
+                    exclude: /node_modules/,
+                    use: ['vue-loader']
+                },
+                {
+                    test: /\.js$/i,
+                    exclude: /node_modules/,
+                    use: 'happypack/loader?id=js',
+                },
+                {
+                    test: /\.less$/i,
+                    exclude: /node_modules/,
+                    use: [isProd ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader', {
+                        loader: 'less-loader',
+                        options: {
+                            lessOptions: {
+                                modifyVars: modifyVars(),
+                                javascriptEnabled: true,
+                            },
+                            appendData: `@import '@/theme/theme.less';`
+                        },
+                    },],
+                },
+                {
+                    test: /\.css$/i,
+                    use: [isProd ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader'],
+                },
+                {
+                    test: /\.(png|jpg|gif|jpeg|svg)$/i,
+                    exclude: /node_modules/,
+                    type: "asset/resource",
+                    parser: {
+                        dataUrlCondition: {
+                            maxSize: 10 * 1024,
+                        },
+                    },
+                    generator: {
+                        filename: 'images/[base]',
+                    },
+                    use: [{
+                        loader: 'image-webpack-loader',
+                        options: {
+                            optipng: {
+                                quality: 80
+                            },
+                        }
+                    }]
+                },
+            ],
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'NODE_ENV': JSON.stringify('production'),
+                    'VUE_APP_API_BASE_URL': JSON.stringify('http://dev.iczer.com')
+                }
+            }),
+            new webpack.IgnorePlugin({
+                resourceRegExp: /^\.\/locale$/,
+                contextRegExp: /moment/,
+            }),
+            new HtmlWebpackPlugin({
+                template: resolve('public/index.html'),
+                filename: 'index.html',
+                CDN: assetsCDN,
+                title: 'title!!'
+            }),
+            new ThemeColorReplacer({
+                fileName: 'css/theme-colors-[contenthash:8].css',
+                matchColors: getThemeColors(),
+                injectCss: true,
+                resolveCss
+            }),
+            new VueLoaderPlugin(),
+            new HappyPack({
+                id: 'js',
+                loaders: ['babel-loader']
+            }),
+            new MiniCssExtractPlugin(),
+            new StatoscopeWebpackPlugin()
+        ],
+        externals: assetsCDN.externals
+    };
+}
+
+
+```
+
 ![最终打包结果](最终打包结果.png)
 
 ![最终结果](最终结果.png)
+
+**没有做 babel/eslint/styleLint等配置 可以自己实践**
