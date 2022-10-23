@@ -354,11 +354,11 @@ module.exports = (env) => {
 
 ##### `webpack`最终结果
 
-![webpack5初始配置](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/webpack5初始配置.png)
+![webpack5初始配置](webpack5初始配置.png)
 
 ##### `vue-cli`结果
 
-![未优化项目](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/未优化项目.png)
+![未优化项目](未优化项目.png)
 
 ## 优化
 
@@ -452,7 +452,7 @@ module.exports = (env) => {
 </html>
 ```
 
-![externals](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/externals.png)
+![externals](externals.png)
 
 ###### 
 
@@ -493,7 +493,7 @@ module.exports = (env) => {
 
 **打包结果**
 
-![CDN引入](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/CDN引入.png)
+![CDN引入](CDN引入.png)
 
 ##### 4.将样式代码抽离成单独的 CSS 文件 `mini-css-extract-plugin` 替代 `style-loader`
 
@@ -537,15 +537,15 @@ module.exports = (env) => {
 
 **抽离前：**
 
-![抽离css文件前](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/抽离css文件前.png)
+![抽离css文件前](抽离css文件前.png)
 
-![抽离css前-打包](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/抽离css前-打包.png)
+![抽离css前-打包](抽离css前-打包.png)
 
 **抽离后：**
 
-![抽离css后](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/抽离css后.png)
+![抽离css后](抽离css后.png)
 
-![抽离css后-打包](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/抽离css后-打包.png)
+![抽离css后-打包](抽离css后-打包.png)
 
 ##### 5.将样式代码进行压缩 `css-minimizer-webpack-plugin`
 
@@ -566,11 +566,11 @@ module.exports = (env) => {
 
 **压缩前:**
 
-![css压缩前](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/css压缩前.png)
+![css压缩前](css压缩前.png)
 
 **压缩后:**
 
-![css压缩后](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/css压缩后.png)
+![css压缩后](css压缩后.png)
 
 ##### 6.压缩`html` `html-minimizer-webpack-plugin`
 
@@ -633,11 +633,11 @@ module.exports = (env) => {
 
 **图片压缩前:**
 
-![图片压缩前](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/图片压缩前.png)
+![图片压缩前](图片压缩前.png)
 
 **图片压缩后：**
 
-![图片压缩后](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/图片压缩后.png)
+![图片压缩后](图片压缩后.png)
 
 ##### 8.开启 `tree-shaking` 以及 `splitchunk`
 
@@ -708,6 +708,6 @@ module.exports = (env) => {
 
 ```
 
-![最终打包结果](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/最终打包结果.png)
+![最终打包结果](最终打包结果.png)
 
-![最终结果](/Users/ninja/workspace/blog/性能优化/webpack5优化实践/最终结果.png)
+![最终结果](最终结果.png)
