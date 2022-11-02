@@ -1,18 +1,18 @@
-Promise._all = function (promiseArray) {
-    const result = []
+Promise._all = function (array) {
+    const result = [], len = array.length
     let count = 0
     return new Promise((resolve, reject) => {
-        for (let i = 0; i < promiseArray.length; i++) {
-            const p = Promise.resolve(promiseArray[i])
+        array.forEach((item, index) => {
+            let p = Promise.resolve(item)
             p.then(res => {
-                result.push(res)
+                result[index] = res
                 count++
-                if (count === promiseArray.length) {
+                if (count === len) {
                     resolve(result)
                 }
             }).catch(e => {
                 reject(e)
             })
-        }
+        })
     })
 }
