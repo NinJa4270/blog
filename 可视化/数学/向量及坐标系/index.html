@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/rough.js/3.1.0/rough-async.es5.umd.js"></script>
+</head>
+
+<body>
+    <canvas id="canvas" height="256" width="512"></canvas>
+    <script>
+        // 山的高度是 100，底边 200，两座山的中心位置到中线的距离都是 80，太阳的圆心高度是 150。
+        // 经过顶点换算
+        // const rc = rough.canvas(document.querySelector('canvas'));
+        // const hillOpts = { roughness: 2.8, strokeWidth: 2, fill: 'blue' };
+        // rc.path('M76 256L176 156L276 256', hillOpts);
+        // rc.path('M236 256L336 156L436 256', hillOpts);
+        // rc.circle(256, 106, 105, {
+        //     stroke: 'red',
+        //     strokeWidth: 4,
+        //     fill: 'rgba(255, 255, 0, 0.4)',
+        //     fillStyle: 'solid',
+        // });
+
+        // 通过 transform
+        const rc = rough.canvas(document.querySelector('canvas'));
+        const ctx = rc.ctx;
+        // 1. 通过 translate 变换将 Canvas 画布的坐标原点，从左上角 (0, 0) 点移动至 (256, 256) 位置
+        ctx.translate(256, 256);
+        // 2. 以移动了原点后新的坐标为参照，通过 scale(1, -1) 将 y 轴向下的部分，即 y>0 的部分沿 x 轴翻转 180 度
+        ctx.scale(1, -1);
+        // 这样坐标系就变成以画布底边中点为原点，x 轴向右，y 轴向上的坐标系了。
+
+
+        const hillOpts = { roughness: 2.8, strokeWidth: 2, fill: 'blue' };
+
+        rc.path('M-180 0L-80 100L20 0', hillOpts);
+        rc.path('M-20 0L80 100L180 0', hillOpts);
+
+        rc.circle(0, 150, 105, {
+            stroke: 'red',
+            strokeWidth: 4,
+            fill: 'rgba(255,255, 0, 0.4)',
+            fillStyle: 'solid',
+        });
+    </script>
+</body>
+
+</html>
