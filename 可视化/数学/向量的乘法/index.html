@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="module">
+        import { Vector2D } from '../index.js'
+
+        // 二维
+        const a = new Vector2D(10, 0)
+        const b = new Vector2D(5, 5)
+
+        // 点乘
+        const dir = b.dir - a.dir
+        const res = Math.floor(a.len * b.len * Math.cos(dir)) // 50
+
+        // 1. 两个向量平行时  a1.x * b1.x + a1.y * b1.y ===  a1.len * b1.len
+        const a1 = new Vector2D(10, 0)
+        const b1 = new Vector2D(5, 0)
+        const dir1 = b1.dir - a1.dir // 1
+        const res1 = Math.floor(a1.len * b1.len * Math.cos(dir1)) // 50
+        const left1 = a1.x * b1.x + a1.y * b1.y
+        const right1 = a1.len * b1.len
+        // console.log('%cindex.html line:30 left === right', 'color: #007acc;', left1 === right1);
+
+        // 2. 两个向量垂直时  a1.x * b1.x + a1.y * b1.y === 0
+        const a2 = new Vector2D(10, 0)
+        const b2 = new Vector2D(0, 10)
+        const left2 = a1.x * b1.x + a1.y * b1.y // 0
+
+
+        // 乘积   
+        // 三维中 a X b = [y1 * z2 - y2 * z1, - (x1 * z2 - x2 * z1), x1 * y2 - x2 * y1]
+        // 二维中 z为0 可得 a X b = x1*y2 - x2*y1
+
+
+        // 已知线段[(x0, y0)、(x1, y1)]，以及一个点 (x2, y2)，怎么求点到线段的距离？
+        const A = [0, 5]
+        const B = [10, 5]
+        const P = [0, 0]
+        const v1 = new Vector2D(A[0] - P[0], A[1] - P[1])
+        const v2 = new Vector2D(A[0] - B[0], A[1] - B[1])
+
+        const s = v1.x * v2.y - v2.x * v1.y
+        const result = s / v2.len
+        console.log('%cindex.html line:62 result', 'color: #007acc;', result);
+
+    </script>
+</body>
+
+</html>
